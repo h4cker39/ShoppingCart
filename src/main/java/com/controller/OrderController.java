@@ -20,9 +20,18 @@ public class OrderController {
 	@Autowired
 	private CustomerOrderService customerOrderService;
 
+	@NotNull
+	@Pattern(message="Incorrect value inserted",regexp="^[0-9]*$")
+	private String CartId;
+	//add to form tags
+	
+	
 	@RequestMapping("/order/{cartId}")
-	public String createOrder(@PathVariable("cartId") String cartId) {
+	public String createOrder(@Valid @PathVariable("cartId") String CartId, BindingResult binding) {
 
+		// prevent SQL Injection by numeric value
+		if(binding.hasErros()){
+		
 		CustomerOrder customerOrder = new CustomerOrder();
 
 		Cart cart = cartService.getCartByCartId(cartId);
@@ -41,5 +50,10 @@ public class OrderController {
 		customerOrderService.addCustomerOrder(customerOrder);
 
 		return "redirect:/checkout?cartId=" + cartId;
+		}
+		else{
+		return null;
+		}
+		
 	}
 }
