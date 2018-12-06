@@ -21,8 +21,11 @@ public class OrderController {
 	private CustomerOrderService customerOrderService;
 
 	@RequestMapping("/order/{cartId}")
-	public String createOrder(@PathVariable("cartId") String cartId) {
+	public String createOrder(@Valid @PathVariable("cartId") String cartId, BindingResult binding) {
 
+		// prevent SQL Injection by numeric value
+		if(binding.hasErros()){
+		
 		CustomerOrder customerOrder = new CustomerOrder();
 
 		Cart cart = cartService.getCartByCartId(cartId);
@@ -41,5 +44,10 @@ public class OrderController {
 		customerOrderService.addCustomerOrder(customerOrder);
 
 		return "redirect:/checkout?cartId=" + cartId;
+		}
+		else{
+		return 
+		}
+		
 	}
 }
